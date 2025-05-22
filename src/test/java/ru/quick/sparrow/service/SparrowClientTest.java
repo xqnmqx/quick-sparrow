@@ -4,6 +4,7 @@ import io.grpc.Grpc;
 import io.grpc.InsecureChannelCredentials;
 import io.grpc.ManagedChannel;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class SparrowClientTest {
@@ -41,7 +42,9 @@ public class SparrowClientTest {
                 .build();
         try {
             SparrowClient client = new SparrowClient(channel);
-            client.post(user);
+            client.post("Hi!", user);
+            List<String> messages = client.getMessages(user);
+            System.out.println("Response messages: " + messages.get(0));
         } finally {
             // ManagedChannels use resources like threads and TCP connections. To prevent leaking these
             // resources the channel should be shut down when it will no longer be used. If it may be used

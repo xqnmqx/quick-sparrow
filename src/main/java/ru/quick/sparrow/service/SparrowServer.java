@@ -3,28 +3,24 @@ package ru.quick.sparrow.service;
 import io.grpc.Grpc;
 import io.grpc.InsecureServerCredentials;
 import io.grpc.Server;
-import io.grpc.stub.StreamObserver;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-/**
- * Server that manages startup/shutdown of a {@code Greeter} server.
- */
 public class SparrowServer {
+
   private static final Logger logger = Logger.getLogger(SparrowServer.class.getName());
+  private static final int SERVER_PORT = 50051;
 
   private Server server;
 
   public void start() throws IOException {
-    /* The port on which the server should run */
-    int port = 50051;
-    server = Grpc.newServerBuilderForPort(port, InsecureServerCredentials.create())
+    server = Grpc.newServerBuilderForPort(SERVER_PORT, InsecureServerCredentials.create())
         .addService(new MessengerImpl())
         .build()
         .start();
-    logger.info("Server started, listening on " + port);
+    logger.info("Server started, listening on " + SERVER_PORT);
     Runtime.getRuntime().addShutdownHook(new Thread() {
       @Override
       public void run() {
@@ -46,22 +42,9 @@ public class SparrowServer {
     }
   }
 
-  /**
-   * Await termination on the main thread since the grpc library uses daemon threads.
-   */
   public void blockUntilShutdown() throws InterruptedException {
     if (server != null) {
       server.awaitTermination();
-    }
-  }
-
-  static class MessengerImpl extends MessengerGrpc.MessengerImplBase {
-
-    @Override
-    public void react(MessageRequest req, StreamObserver<MessageReply> responseObserver) {
-      MessageReply reply = MessageReply.newBuilder().setMessage("Reacted " + req.getName()).build();
-      responseObserver.onNext(reply);
-      responseObserver.onCompleted();
     }
   }
 }
