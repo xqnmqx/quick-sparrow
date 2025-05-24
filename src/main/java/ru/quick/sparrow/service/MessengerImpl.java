@@ -6,8 +6,10 @@ import io.grpc.stub.StreamObserver;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 class MessengerImpl extends MessengerGrpc.MessengerImplBase {
+    private static final Logger logger = Logger.getLogger(MessengerImpl.class.getName());
 
     private final Map<String, List<String>> messages = new HashMap<>();
 
@@ -21,8 +23,8 @@ class MessengerImpl extends MessengerGrpc.MessengerImplBase {
 
     @Override
     public void getMessages(MessagesRequest request, StreamObserver<MessagesResponse> responseStreamObserver) {
-        System.out.println("Getting messages for address: " + request.getAddress());
-        String message = messages.get(request.getAddress()).get(0);
+        logger.info("Getting messages for address: " + request.getClientId());
+        String message = getMessage(request.getClientId());
         MessagesResponse resp = MessagesResponse.newBuilder()
                 .setMessages(ListOfStrings.newBuilder()
                         .addStrings(message)
@@ -32,8 +34,15 @@ class MessengerImpl extends MessengerGrpc.MessengerImplBase {
         responseStreamObserver.onCompleted();
     }
 
-    public void putMessage(String address, String message) {
-      System.out.println("Message put: " + address + " " + message);
+    private String getMessage(String clientId) {
+        if (messages.containsKey(clientId)) {
+            return messages.get(clientId).get(0);
+        }
+        return "No messages for client with id: " + clientId;
+    }
+
+    private void putMessage(String address, String message) {
+      logger.info("Message put: " + address + " " + message);
       if (messages.get(address) == null) {
         messages.put(address, Lists.newArrayList(message));
       } else {

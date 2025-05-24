@@ -11,8 +11,10 @@ public class SparrowClient {
   private static final Logger logger = Logger.getLogger(SparrowClient.class.getName());
 
   private final MessengerGrpc.MessengerBlockingStub blockingStub;
+  private final String clientId;
 
-  public SparrowClient(Channel channel) {
+  public SparrowClient(Channel channel, String clientId) {
+    this.clientId = clientId;
     // 'channel' here is a Channel, not a ManagedChannel, so it is not this code's responsibility to
     // shut it down.
 
@@ -33,9 +35,9 @@ public class SparrowClient {
     logger.info("Message sent: " + response.getMessage());
   }
 
-  public List<String> getMessages(String address) {
+  public List<String> getMessages() {
     logger.info("Will try to request messages");
-    MessagesRequest request = MessagesRequest.newBuilder().setAddress(address).build();
+    MessagesRequest request = MessagesRequest.newBuilder().setClientId(clientId).build();
     MessagesResponse response;
     try {
       response = blockingStub.getMessages(request);

@@ -6,8 +6,10 @@ import io.grpc.ManagedChannel;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 public class SparrowClientTest {
+    private static final Logger logger = Logger.getLogger(SparrowClientTest.class.getName());
 
     /**
      * Greet server. If provided, the first element of {@code args} is the name to use in the
@@ -41,10 +43,18 @@ public class SparrowClientTest {
         ManagedChannel channel = Grpc.newChannelBuilder(target, InsecureChannelCredentials.create())
                 .build();
         try {
-            SparrowClient client = new SparrowClient(channel);
-            client.post("Hi!", user);
-            List<String> messages = client.getMessages(user);
-            System.out.println("Response messages: " + messages.get(0));
+            SparrowClient client1 = new SparrowClient(channel, "client-1");
+            SparrowClient client2 = new SparrowClient(channel, "client-2");
+
+            client1.post("Hi! How are you?", "client-2");
+
+            List<String> messages = client2.getMessages();
+            logger.info("Response messages for client 2: " + messages.get(0));
+
+            client2.post("Hi! Thanks! I am fine. And what about you?", "client-1");
+
+            messages = client1.getMessages();
+            logger.info("Response messages for client 1: " + messages.get(0));
         } finally {
             // ManagedChannels use resources like threads and TCP connections. To prevent leaking these
             // resources the channel should be shut down when it will no longer be used. If it may be used

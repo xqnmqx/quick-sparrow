@@ -16,6 +16,8 @@ service Messenger {
 message MessageRequest {
   string message = 1;
   string address = 2;
+  string clientId = 3;
+  string token = 4;
 }
 
 message MessageReply {
@@ -24,7 +26,8 @@ message MessageReply {
 }
 
 message MessagesRequest {
-  string address = 1;
+  string clientId = 2;
+  string token = 3;
 }
 
 message MessagesResponse {
