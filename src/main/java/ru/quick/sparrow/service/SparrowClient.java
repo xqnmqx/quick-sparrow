@@ -35,7 +35,7 @@ public class SparrowClient {
     logger.info("Message sent: " + response.getMessage());
   }
 
-  public List<String> getMessages() {
+  public List<Object> getMessages() {
     logger.info("Will try to request messages");
     MessagesRequest request = MessagesRequest.newBuilder().setClientId(clientId).build();
     MessagesResponse response;
@@ -46,7 +46,11 @@ public class SparrowClient {
       return List.of();
     }
     logger.info("Message sent: " + response.getMessages());
-    return List.of(response.getMessages().getStrings(0));
+    return List.of(response.getMessages().getStringsList().toArray());
+  }
+
+  public String getClientId() {
+    return clientId;
   }
 
 }

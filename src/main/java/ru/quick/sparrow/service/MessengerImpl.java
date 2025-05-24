@@ -24,21 +24,21 @@ class MessengerImpl extends MessengerGrpc.MessengerImplBase {
     @Override
     public void getMessages(MessagesRequest request, StreamObserver<MessagesResponse> responseStreamObserver) {
         logger.info("Getting messages for address: " + request.getClientId());
-        String message = getMessage(request.getClientId());
+        List<String> messages = getMessages(request.getClientId());
         MessagesResponse resp = MessagesResponse.newBuilder()
                 .setMessages(ListOfStrings.newBuilder()
-                        .addStrings(message)
+                        .addAllStrings(messages)
                         .build())
                 .build();
         responseStreamObserver.onNext(resp);
         responseStreamObserver.onCompleted();
     }
 
-    private String getMessage(String clientId) {
+    private List<String> getMessages(String clientId) {
         if (messages.containsKey(clientId)) {
-            return messages.get(clientId).get(0);
+            return messages.get(clientId);
         }
-        return "No messages for client with id: " + clientId;
+        return List.of("No messages for client with id: " + clientId);
     }
 
     private void putMessage(String address, String message) {

@@ -10,6 +10,8 @@ import java.util.logging.Logger;
 
 public class SparrowClientTest {
     private static final Logger logger = Logger.getLogger(SparrowClientTest.class.getName());
+    public static final String CLIENT_1 = "client-1";
+    public static final String CLIENT_2 = "client-2";
 
     /**
      * Greet server. If provided, the first element of {@code args} is the name to use in the
@@ -44,23 +46,32 @@ public class SparrowClientTest {
         ManagedChannel channel = Grpc.newChannelBuilder(target, InsecureChannelCredentials.create())
                 .build();
         try {
-            SparrowClient client1 = new SparrowClient(channel, "client-1");
-            SparrowClient client2 = new SparrowClient(channel, "client-2");
+            SparrowClient client1 = new SparrowClient(channel, CLIENT_1);
+            SparrowClient client2 = new SparrowClient(channel, CLIENT_2);
 
-            client1.post("Hi! How are you?", "client-2");
+            client1.post("Hi! How are you?", CLIENT_2);
+            readClientMessages(client2);
 
-            List<String> messages = client2.getMessages();
-            logger.info("Response messages for client 2: " + messages.get(0));
+            client2.post("Hi! Thanks! I am fine. And what about you?", CLIENT_1);
+            readClientMessages(client1);
 
-            client2.post("Hi! Thanks! I am fine. And what about you?", "client-1");
+            client1.post("I am good. Do you have a plan on the evening today?", CLIENT_2);
+            readClientMessages(client2);
 
-            messages = client1.getMessages();
-            logger.info("Response messages for client 1: " + messages.get(0));
+            client2.post("No. But what do you want?", CLIENT_1);
+            readClientMessages(client1);
         } finally {
             // ManagedChannels use resources like threads and TCP connections. To prevent leaking these
             // resources the channel should be shut down when it will no longer be used. If it may be used
             // again leave it running.
             channel.shutdownNow().awaitTermination(5, TimeUnit.SECONDS);
         }
+    }
+
+    private static void readClientMessages(SparrowClient sparrowClient) {
+        List<Object> messages = sparrowClient.getMessages();
+        messages.forEach(m -> {
+            logger.info("Response messages for client" + sparrowClient.getClientId() + ": " + m);
+        });
     }
 }
