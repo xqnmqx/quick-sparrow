@@ -46,7 +46,7 @@ public class SparrowClient {
       return List.of();
     }
     logger.info("Message sent: " + response.getMessages());
-    return List.of(response.getMessages().getStringsList().toArray());
+    return List.of(response.getMessages());
   }
 
   public String getClientId() {

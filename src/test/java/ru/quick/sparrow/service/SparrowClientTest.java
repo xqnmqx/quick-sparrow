@@ -69,9 +69,13 @@ public class SparrowClientTest {
     }
 
     private static void readClientMessages(SparrowClient sparrowClient) {
-        List<Object> messages = sparrowClient.getMessages();
-        messages.forEach(m -> {
-            logger.info("Response messages for client" + sparrowClient.getClientId() + ": " + m);
+        ListOfMessages listOfMessages = (ListOfMessages) sparrowClient.getMessages().get(0);
+        listOfMessages.getMessagesList().forEach(m -> {
+            logger.info(
+                    "Response messages for client"
+                            + sparrowClient.getClientId()
+                            + ": " + m.getTimestamp()
+                            + " : " + m.getMessage());
         });
     }
 }

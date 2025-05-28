@@ -31,9 +31,14 @@ message MessagesRequest {
 }
 
 message MessagesResponse {
-  ListOfStrings messages = 1;
+  ListOfMessages messages = 1;
 }
 
-message ListOfStrings {
-    repeated string strings = 1;
+message ListOfMessages {
+    repeated MessageBody messages = 1;
+}
+
+message MessageBody {
+    int64 timestamp = 1;
+    string message = 2;
 }
