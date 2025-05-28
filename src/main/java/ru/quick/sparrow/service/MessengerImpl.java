@@ -1,18 +1,13 @@
 package ru.quick.sparrow.service;
 
-import com.google.common.collect.Lists;
 import io.grpc.stub.StreamObserver;
 import ru.quick.sparrow.model.Message;
 import ru.quick.sparrow.store.HashMessageStore;
 import ru.quick.sparrow.store.MessageStore;
 
-import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 class MessengerImpl extends MessengerGrpc.MessengerImplBase {
     private static final Logger logger = Logger.getLogger(MessengerImpl.class.getName());
