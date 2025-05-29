@@ -7,6 +7,8 @@ import io.grpc.ManagedChannel;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import static ru.quick.sparrow.Utils.xor;
+
 public class SparrowClientTest {
     private static final Logger logger = Logger.getLogger(SparrowClientTest.class.getName());
     public static final String CLIENT_1 = "client-1";
@@ -68,7 +70,9 @@ public class SparrowClientTest {
     }
 
     private static void readClientMessages(SparrowClient sparrowClient, SparrowClient friend) {
-        ListOfMessages listOfMessages = (ListOfMessages) sparrowClient.getMessages(friend.getClientId()).get(0);
+        ListOfMessages listOfMessages =
+                (ListOfMessages) sparrowClient.getMessages(friend.getClientId())
+                        .get(0);
         listOfMessages.getMessagesList().forEach(m -> {
             logger.info(
                     "Response messages for client"

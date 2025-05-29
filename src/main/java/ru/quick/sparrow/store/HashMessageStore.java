@@ -31,8 +31,9 @@ public class HashMessageStore implements MessageStore {
 
     @Override
     public List<Message> getMessages(String clientId, String friendId) {
-        if (messages.containsKey(clientId)) {
-            return messages.get(clientId);
+        String key = generateUniqueConversationKey(clientId, friendId);
+        if (messages.containsKey(key)) {
+            return messages.get(key);
         }
         return List.of(
                 new Message(
