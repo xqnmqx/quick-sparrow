@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface MessageStore {
 
-    void putMessage(String messageBox, String message);
+    void putMessage(String addressee, String message, String sender);
 
-    List<Message> getMessages(String clientId);
+    List<Message> getMessages(String clientId, String friendId);
 }

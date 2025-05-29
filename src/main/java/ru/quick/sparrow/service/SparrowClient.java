@@ -24,7 +24,11 @@ public class SparrowClient {
 
   public void post(String message, String address) {
     logger.info("Will try to post message: " + message + ". To address " + address);
-    MessageRequest request = MessageRequest.newBuilder().setMessage(message).setAddress(address).build();
+    MessageRequest request = MessageRequest.newBuilder()
+            .setMessage(message)
+            .setAddress(address)
+            .setClientId(clientId)
+            .build();
     MessageReply response;
     try {
       response = blockingStub.react(request);
@@ -35,9 +39,12 @@ public class SparrowClient {
     logger.info("Message sent: " + response.getMessage());
   }
 
-  public List<Object> getMessages() {
+  public List<Object> getMessages(String friendId) {
     logger.info("Will try to request messages");
-    MessagesRequest request = MessagesRequest.newBuilder().setClientId(clientId).build();
+    MessagesRequest request = MessagesRequest.newBuilder()
+            .setFriendId(friendId)
+            .setClientId(clientId)
+            .build();
     MessagesResponse response;
     try {
       response = blockingStub.getMessages(request);

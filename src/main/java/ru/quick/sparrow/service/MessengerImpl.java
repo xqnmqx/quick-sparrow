@@ -21,7 +21,7 @@ class MessengerImpl extends MessengerGrpc.MessengerImplBase {
     @Override
     public void react(MessageRequest req, StreamObserver<MessageReply> responseObserver) {
       MessageReply reply = MessageReply.newBuilder().setMessage("Got message: " + req.getMessage()).build();
-      messageStore.putMessage(req.getAddress(), req.getMessage());
+      messageStore.putMessage(req.getAddress(), req.getMessage(), req.getClientId());
       responseObserver.onNext(reply);
       responseObserver.onCompleted();
     }
@@ -29,7 +29,7 @@ class MessengerImpl extends MessengerGrpc.MessengerImplBase {
     @Override
     public void getMessages(MessagesRequest request, StreamObserver<MessagesResponse> responseStreamObserver) {
         logger.info("Getting messages for address: " + request.getClientId());
-        List<Message> messages = messageStore.getMessages(request.getClientId());
+        List<Message> messages = messageStore.getMessages(request.getClientId(), request.getFriendId());
         List<MessageBody> messageBodies = messages.stream()
                 .map(m -> MessageBody.newBuilder()
                         .setMessage(m.message())

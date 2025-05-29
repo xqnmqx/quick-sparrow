@@ -26,6 +26,7 @@ message MessageReply {
 }
 
 message MessagesRequest {
+  string friendId = 1;
   string clientId = 2;
   string token = 3;
 }
